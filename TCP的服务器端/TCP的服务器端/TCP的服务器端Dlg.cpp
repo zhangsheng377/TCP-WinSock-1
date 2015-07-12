@@ -128,7 +128,7 @@ void CTCP的服务器端Dlg::OnTimer(UINT_PTR nIDEvent)
 	char szSend[20];
 	sprintf_s(szSend, "%010d", iIndex++);
 	int iSend = my_SockSend.Send(szSend, 10, 0);
-	my_ServerStatus.Format(L"正在发送数据%010d", iIndex);
+	my_ServerStatus.Format(L"正在发送数据%010d", iIndex-1);
 	UpdateData(false);
 
 	CDialogEx::OnTimer(nIDEvent);
