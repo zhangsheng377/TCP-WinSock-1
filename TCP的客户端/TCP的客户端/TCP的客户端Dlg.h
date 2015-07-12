@@ -32,4 +32,6 @@ public:
 	CString my_ServerIP;
 	int my_ServerPort;
 	CString my_ReceiveData;
+
+	CSocket m_SockReceive;
 };
