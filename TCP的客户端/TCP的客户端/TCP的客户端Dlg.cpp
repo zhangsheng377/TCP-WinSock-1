@@ -18,6 +18,9 @@
 
 CTCP的客户端Dlg::CTCP的客户端Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CTCP的客户端Dlg::IDD, pParent)
+	, my_ServerIP(_T(""))
+	, my_ServerPort(0)
+	, my_ReceiveData(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -25,6 +28,9 @@ CTCP的客户端Dlg::CTCP的客户端Dlg(CWnd* pParent /*=NULL*/)
 void CTCP的客户端Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_EDIT1, my_ServerIP);
+	DDX_Text(pDX, IDC_EDIT2, my_ServerPort);
+	DDX_Text(pDX, IDC_EDIT3, my_ReceiveData);
 }
 
 BEGIN_MESSAGE_MAP(CTCP的客户端Dlg, CDialogEx)

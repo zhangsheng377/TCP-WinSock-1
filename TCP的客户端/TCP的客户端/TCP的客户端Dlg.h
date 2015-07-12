@@ -28,4 +28,8 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	CString my_ServerIP;
+	int my_ServerPort;
+	CString my_ReceiveData;
 };
