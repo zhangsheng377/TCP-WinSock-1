@@ -35,4 +35,7 @@ public:
 
 	CSocket my_SockListen;
 	CAsyncSocket my_SockSend;
+	afx_msg void OnBnClickedSend();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedStop();
 };

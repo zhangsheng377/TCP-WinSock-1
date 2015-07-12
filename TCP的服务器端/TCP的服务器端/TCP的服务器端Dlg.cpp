@@ -36,6 +36,9 @@ void CTCP的服务器端Dlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTCP的服务器端Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_SEND, &CTCP的服务器端Dlg::OnBnClickedSend)
+	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_STOP, &CTCP的服务器端Dlg::OnBnClickedStop)
 END_MESSAGE_MAP()
 
 
@@ -91,3 +94,54 @@ HCURSOR CTCP的服务器端Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CTCP的服务器端Dlg::OnBnClickedSend()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	UpdateData(true);
+	if (my_SockListen.Create(my_ServerPort, SOCK_STREAM, NULL))
+	{
+		GetDlgItem(IDC_SEND)->EnableWindow(false);
+		GetDlgItem(IDC_STOP)->EnableWindow(true);
+		my_SockListen.Bind(my_ServerPort, my_ServerIP);
+		if (my_SockListen.Listen())
+		{
+			my_ServerStatus = "服务器处于监听状态!";
+			UpdateData(false);
+			my_SockListen.Accept(my_SockSend);					//处于等待连接状态,直到有连接进入才返回
+			my_SockListen.Close();
+			SetTimer(1, 2000, NULL);							//创建一个定时器用于发送消息
+		}
+		else
+		{
+			AfxMessageBox(L"Socket创建失败!");
+		}
+	}
+}
+
+
+void CTCP的服务器端Dlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	static int iIndex = 0;
+	char szSend[20];
+	sprintf_s(szSend, "%010d", iIndex++);
+	int iSend = my_SockSend.Send(szSend, 10, 0);
+	my_ServerStatus.Format(L"正在发送数据%010d", iIndex);
+	UpdateData(false);
+
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CTCP的服务器端Dlg::OnBnClickedStop()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	KillTimer(1);
+	my_SockSend.Close();
+	my_ServerStatus = "服务器停止发送数据!";
+	UpdateData(false);
+	GetDlgItem(IDC_SEND)->EnableWindow(true);
+	GetDlgItem(IDC_STOP)->EnableWindow(false);
+}
