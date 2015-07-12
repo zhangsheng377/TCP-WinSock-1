@@ -32,4 +32,7 @@ public:
 	CString my_ServerIP;
 	int my_ServerPort;
 	CString my_ServerStatus;
+
+	CSocket my_SockListen;
+	CAsyncSocket my_SockSend;
 };
