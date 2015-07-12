@@ -36,6 +36,9 @@ void CTCP的客户端Dlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTCP的客户端Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_RECEIVE, &CTCP的客户端Dlg::OnBnClickedReceive)
+	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_STOP, &CTCP的客户端Dlg::OnBnClickedStop)
 END_MESSAGE_MAP()
 
 
@@ -91,3 +94,56 @@ HCURSOR CTCP的客户端Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CTCP的客户端Dlg::OnBnClickedReceive()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	UpdateData(true);
+	if (m_SockReceive.Create())
+	{
+		m_SockReceive.Connect(my_ServerIP, my_ServerPort);
+		SetTimer(1, 2000, NULL);
+		my_ReceiveData = "成功连接服务器!";
+		UpdateData(false);
+		GetDlgItem(IDC_RECEIVE)->EnableWindow(false);
+		GetDlgItem(IDC_STOP)->EnableWindow(true);
+	}
+	else
+	{
+		AfxMessageBox(L"Socket创建失败!");
+	}
+}
+
+
+void CTCP的客户端Dlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	char szRecv[20];
+	int iRecv = m_SockReceive.Receive(szRecv, 10, 0);
+	if (iRecv >= 0)
+	{
+		szRecv[iRecv] = NULL;
+		my_ReceiveData = szRecv;
+		my_ReceiveData = L"接收数据为:" + my_ReceiveData;
+	}
+	else
+	{
+		my_ReceiveData = "没有收到数据!";
+	}
+	UpdateData(false);
+
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CTCP的客户端Dlg::OnBnClickedStop()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	KillTimer(1);
+	m_SockReceive.Close();
+	my_ReceiveData = "停止接收数据!";
+	UpdateData(false);
+	GetDlgItem(IDC_RECEIVE)->EnableWindow(true);
+	GetDlgItem(IDC_STOP)->EnableWindow(false);
+}

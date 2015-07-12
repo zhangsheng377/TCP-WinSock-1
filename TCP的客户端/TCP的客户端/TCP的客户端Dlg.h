@@ -34,4 +34,7 @@ public:
 	CString my_ReceiveData;
 
 	CSocket m_SockReceive;
+	afx_msg void OnBnClickedReceive();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedStop();
 };
